@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>chromiumOS v129</title>
+<link rel="icon" href="file:///usr/share/chromeos-assets/echo/chrome128.png">
+<style>
+    @font-face {
+    font-family: 'Product Sans Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Product Sans Regular'), url('../usr/share/chromeos-assets/sys/fonts/reg.woff') format('woff');
+    }
+    @font-face {
+    font-family: 'Product Sans Medium';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Product Sans Medium'), url('../usr/share/chromeos-assets/sys/fonts/med.woff') format('woff');
+    }
+body {
+    margin: 0;
+    background-image: url(file:///usr/share/chromeos-assets/wallpaper/hp_default_small.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+user-select: none;
+}
+.taskbar {
+    background-color: rgba(47, 45, 51, 0.8);
+    backdrop-filter: blur(5px);
+    width: 100%;
+    height: 49.4px;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    border-radius: 24.2px 24.2px 0px 0px;
+    align-items: center;
+    display: flex;
+}
+.searchbuttontaskbar {
+    background-color: rgb(75, 70, 74);
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    left: 5px;
+    top: 5px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.searchbuttonicon {
+    width: 22px;
+    height: auto;
+}
+.taskbaricons {
+    width: 100%;
+    height: 49.4px;
+    background-color: rgba(0,0,0,0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.taskbaricons img {
+    width: 33px;
+    height: auto;
+}
+.searchbuttonactivated {
+    background-color: rgb(202, 194, 227);
+}
+.quicksettingsbutton {
+    background-color: rgb(75, 70, 74);
+    width: 90px;
+    height: 35px;
+    border-radius: 10px 25px 25px 10px;
+    right: 5px;
+    top: 5px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.quicksettingsbutton p {
+    font-family: 'Product Sans Medium';
+    color: white;
+}
+.quicksettingsbutton img {
+    margin-left: 8px;
+    width: 20px;
+    height: auto;
+}
+.quicksettingsbuttonactivated {
+    background-color: rgb(202, 194, 227);
+    color: rgb(28, 24, 48);
+}
+.calendarbutton {
+    background-color: rgb(75, 70, 74);
+    width: 75px;
+    height: 35px;
+    border-radius: 25px 10px 10px 25px;
+    right: 100px;
+    top: 5px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.calendarbutton p {
+    font-family: 'Product Sans Medium';
+    color: white;
+}
+.calendarbuttonactivated {
+    background-color: rgb(202, 194, 227);
+    color: rgb(28, 24, 48);
+}
+.iframe-container {
+    position: fixed;
+    bottom: 50px;
+    right: 3px;
+    width: 410px;
+    height: 260px;
+    border: none;
+    display: none;
+    z-index: 998;
+}
+.chromium-iframe-container {
+    position: absolute;
+    right: 0px;
+    width: 100%;
+    height: 90%;
+    border: none;
+    display: none;
+}
+.calendar-container {
+    position: fixed;
+    bottom: 49px;
+    right: 3px;
+    width: 410px;
+    height: 342px;
+    border: none;
+    display: none;
+    z-index: 998;
+}
+.tote {
+    background-color: rgb(75, 70, 74);
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    right: 180px;
+    top: 5px;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.toteactivated {
+    background-color: rgb(202, 194, 227);
+    color: rgb(28, 24, 48);
+}
+</style>
+</head>
+<body>
+<div class="taskbar">
+    <div class="searchbuttontaskbar" id="searchButton">
+        <img class="searchbuttonicon" id="searchIcon" src="../usr/share/chromeos-assets/image/search.svg">
+    </div>
+    <div class="taskbaricons">
+        <img id="chromiumIcon" src="https://upload.wikimedia.org/wikipedia/commons/2/28/Chromium_Logo.svg">
+    </div>
+    <div class="quicksettingsbutton" id="quicksettingsbutton">
+        <p class="timequicksettings" id="timeQuickSettings">7:00</p>
+        <img id="wifiIcon" src="../usr/share/chromeos-assets/image/wifion.svg">
+    </div>
+    <div class="calendarbutton" id="calendarbutton">
+        <p class="calendar" id="calendar"></p>
+    </div>
+    <div class="tote" id="totebutton">
+        <img id="toteicon" src="../usr/share/chromeos-assets/image/tote.svg">
+    </div>
+</div>
+
+<iframe id="quicksettingsiframe" class="iframe-container"></iframe>
+<iframe id="calendarmenuiframe" class="calendar-container"></iframe>
+<iframe id="chromiumiframe" class="chromium-iframe-container"></iframe>
+
+<script>
+document.getElementById('searchButton').addEventListener('click', function() {
+    if (this.classList.contains('searchbuttonactivated')) {
+        deselectAll();
+    } else {
+        deselectAll();
+        this.classList.add('searchbuttonactivated');
+        var img = document.getElementById('searchIcon');
+        img.src = '../usr/share/chromeos-assets/image/searchselected.svg';
+    }
+});
+
+document.getElementById('quicksettingsbutton').addEventListener('click', function() {
+    var iframe = document.getElementById('quicksettingsiframe');
+    if (this.classList.contains('quicksettingsbuttonactivated')) {
+        deselectAll();
+    } else {
+        deselectAll();
+        this.classList.add('quicksettingsbuttonactivated');
+        var p = document.querySelector('.quicksettingsbutton p');
+        p.style.color = 'rgb(28, 24, 48)';
+        updateWifiIcon(true);
+        iframe.style.display = 'block';
+        iframe.src = 'web/quicksettings.html'; 
+    }
+});
+
+document.getElementById('calendarbutton').addEventListener('click', function() {
+    var iframe = document.getElementById('calendarmenuiframe');
+    if (this.classList.contains('calendarbuttonactivated')) {
+        deselectAll();
+    } else {
+        deselectAll();
+        this.classList.add('calendarbuttonactivated');
+        var p = document.querySelector('.calendarbutton p');
+        p.style.color = 'rgb(28, 24, 48)';
+        iframe.style.display = 'block';
+        iframe.src = 'web/calendarmenu.html';  
+    }
+});
+
+document.getElementById('totebutton').addEventListener('click', function() {
+    var iframe = document.getElementById('calendarmenuiframe');
+    if (this.classList.contains('calendarbuttonactivated')) {
+        deselectAll();
+    } else {
+        deselectAll();
+        this.classList.add('calendarbuttonactivated');
+        var p = document.querySelector('.calendarbutton p');
+        p.style.color = 'rgb(28, 24, 48)';
+        iframe.style.display = 'block';
+        iframe.src = 'web/calendarmenu.html';
+    }
+});
+
+// Event listener for the Chromium icon
+document.getElementById('chromiumIcon').addEventListener('click', function() {
+    var existingIframe = document.getElementById('chromiumiframe');
+    if (existingIframe) {
+        existingIframe.style.display = 'block';
+        existingIframe.src = 'web/chromium.html';
+    } else {
+        var iframe = document.createElement('iframe');
+        iframe.id = 'chromiumiframe';
+        iframe.className = 'chromium-iframe-container';
+        iframe.style.display = 'block';
+        iframe.src = 'web/chromium.html';
+        document.body.appendChild(iframe);
+    }
+    deselectAll();
+});
+
+
+function deselectAll() {
+    document.querySelectorAll('.searchbuttonactivated, .quicksettingsbuttonactivated, .calendarbuttonactivated').forEach(function(el) {
+        el.classList.remove('searchbuttonactivated', 'quicksettingsbuttonactivated', 'calendarbuttonactivated');
+        if (el.id === 'searchButton') {
+            document.getElementById('searchIcon').src = '../usr/share/chromeos-assets/image/search.svg';
+        } else if (el.id === 'quicksettingsbutton') {
+            document.querySelector('.quicksettingsbutton p').style.color = 'white';
+            var iframe = document.getElementById('quicksettingsiframe');
+            iframe.style.display = 'none';
+            iframe.src = '';  
+            updateWifiIcon(false);
+        } else if (el.id === 'calendarbutton') {
+            document.querySelector('.calendarbutton p').style.color = 'white';
+            var iframe = document.getElementById('calendarmenuiframe');
+            iframe.style.display = 'none';
+            iframe.src = '';  
+        }
+    });
+}
+
+function updateTime() {
+    var now = new Date();
+    var hours = now.getHours();
+    var minutes = now.getMinutes();
+    if (minutes < 10) {
+        minutes = '0' + minutes;
+    }
+    document.getElementById('timeQuickSettings').textContent = hours + ':' + minutes;
+}
+
+function updateDate() {
+    var now = new Date();
+    var options = { month: 'short', day: 'numeric' };
+    var dateString = now.toLocaleDateString('en-US', options);
+    document.getElementById('calendar').textContent = dateString;
+}
+
+function updateWifiIcon(activated) {
+    var wifiIcon = document.getElementById('wifiIcon');
+    if (navigator.onLine) {
+        wifiIcon.src = activated ? '../usr/share/chromeos-assets/image/wifionselected.svg' : '../usr/share/chromeos-assets/image/wifion.svg';
+    } else {
+        wifiIcon.src = activated ? '../usr/share/chromeos-assets/image/wifioffselected.svg' : '../usr/share/chromeos-assets/image/wifioff.svg';
+    }
+}
+
+function checkWifiStatus() {
+    var quickSettingsButton = document.getElementById('quicksettingsbutton');
+    if (quickSettingsButton.classList.contains('quicksettingsbuttonactivated')) {
+        updateWifiIcon(true);
+    } else {
+        updateWifiIcon(false);
+    }
+}
+
+window.addEventListener('message', function(event) {
+    if (event.data.type === 'changeBackground') {
+        document.body.style.backgroundImage = 'url(' + event.data.url + ')';
+    }
+});
+
+window.addEventListener('message', function(event) {
+    if (event.data === 'closeIframe') {
+        var iframe = document.getElementById('chromiumiframe');
+        if (iframe) {
+            iframe.parentNode.removeChild(iframe);
+        }
+    }
+});
+
+updateTime();
+updateDate();
+setInterval(updateTime, 60000);
+setInterval(checkWifiStatus, 1000); 
+</script>
+</body>
+</html>
