@@ -20,6 +20,7 @@ You _can_ use this on Windows/Mac, but it will be missing the default background
 # how to use/fork
 1. just download the source code, open index.html, push the funny button, and there you go.
 2. just fork it and make whatever changes you want. you may have to change some css settings
+3. no size worries! the source code is only arround 500kb~ or so, which should not be a huge deal.
 
 # resolution
 i know i know, its 640x480. i may add additional resolutions in a later feature update, but for now just deal with it. i highly recommend __not__ full screening/maximizing the window since things will not look right.
