@@ -1,0 +1,240 @@
+<html>
+<head>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    navigator.getBattery().then(function(battery) {
+        if (!battery) {
+            document.getElementById('batterycalculation').innerText = '';
+            return;
+        }
+        
+        function updateBatteryInfo() {
+            const level = Math.floor(battery.level * 100);
+            let time;
+            if (level === 100 && battery.charging) {
+                document.getElementById('batterycalculation').innerText = 'Battery full';
+                return;
+            }
+            if (battery.dischargingTime !== Infinity) {
+                time = battery.dischargingTime;
+            } else if (battery.chargingTime !== Infinity) {
+                time = battery.chargingTime;
+            } else {
+                time = 'Calculating...';
+            }
+            const hours = Math.floor(time / 3600);
+            const minutes = Math.floor((time % 3600) / 60);
+            const timeLeft = hours > 0 ? `${hours}:${minutes < 10 ? '0' + minutes : minutes}` : `0:${minutes < 10 ? '0' + minutes : minutes}`;
+            document.getElementById('batterycalculation').innerText = `${level}% - ${time !== 'Calculating...' ? (battery.charging ? timeLeft + ' until full' : timeLeft + ' left') : 'Calculating...'}`;
+        }
+
+        battery.addEventListener('levelchange', updateBatteryInfo);
+        battery.addEventListener('chargingtimechange', updateBatteryInfo);
+        battery.addEventListener('dischargingtimechange', updateBatteryInfo);
+        updateBatteryInfo();
+    });
+
+    document.getElementById('pwrselect').addEventListener('click', function() {
+        var iframe = document.getElementById('pwrIframe');
+        var pwrselect = document.getElementById('pwrselect');
+        var pwrIcon = document.getElementById('pwrIcon');
+        var expIcon = document.getElementById('expIcon');
+
+        if (iframe.style.display === 'none' || iframe.style.display === '') {
+            iframe.style.display = 'block';
+            pwrselect.style.borderRadius = '1px 15px 15px 15px';
+            pwrselect.style.backgroundColor = '#CAC2E3';
+            pwrIcon.src = '../../usr/share/chromeos-assets/general/pwr/pwrselected.svg'; 
+            expIcon.src = '../../usr/share/chromeos-assets/general/pwr/dex.svg'; 
+        } else {
+            iframe.style.display = 'none';
+            pwrselect.style.backgroundColor = '#454A4D';
+            pwrselect.style.borderRadius = '15px 15px 15px 15px'; 
+            pwrIcon.src = '../../usr/share/chromeos-assets/general/pwr/pwr.svg';
+            expIcon.src = '../../usr/share/chromeos-assets/general/pwr/exp.svg'; 
+        }
+    });
+});
+
+</script>
+
+<style>
+        @font-face {
+    font-family: 'Product Sans Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Product Sans Regular'), url('../../usr/share/chromeos-assets/sys/fonts/reg.woff') format('woff');
+    }
+    @font-face {
+    font-family: 'Product Sans Medium';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Product Sans Medium'), url('../../usr/share/chromeos-assets/sys/fonts/med.woff') format('woff');
+    }
+.reg100 {
+width: 100%;
+height: 100%;
+    background-color: rgba(47, 45, 51, 0.95);
+    backdrop-filter: blur(5px);
+border-radius: 16px;
+}
+.accessibilitybutton {
+background-color: #454A4D;
+width: 170px;
+height: 70px;
+left: 12px;
+top: 12px;
+position: absolute;
+border-radius: 15px;
+display: flex;
+align-items: center;
+font-family: 'Product Sans Medium';
+color: white;
+}
+.accessibilitybutton img {
+margin-left: 12px;
+}
+.accessibilitybutton p {
+    margin-left: 10px;
+    font-size: 13px;
+}
+.screenshotbutton {
+background-color: #454A4D;
+width: 90px;
+height: 70px;
+left: 192px;
+top: 12px;
+position: absolute;
+border-radius: 15px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+font-family: 'Product Sans Regular';
+color: white;
+}
+.screenshotbutton p, .dndbutton p {
+    font-size: 11px;
+    margin: 0;
+}
+.pwrselect {
+background-color: #454A4D;
+width: 57px;
+height: 31px;
+left: 10px;
+bottom: 15px;
+position: absolute;
+border-radius: 15px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: 'Product Sans Regular';
+color: white;
+}
+.pwrselect img {
+width: 21px;
+height: auto;
+}
+.dndbutton {
+background-color: #454A4D;
+width: 90px;
+height: 70px;
+left: 290px;
+top: 12px;
+position: absolute;
+border-radius: 15px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+font-family: 'Product Sans Regular';
+color: white;
+}
+.pwrframe {
+bottom: 54px;
+left: 10;
+position: absolute;
+height: 240px;
+width: 200px;
+}
+.signoutbutton {
+background-color: #454A4D;
+width: 80px;
+height: 31px;
+left: 75px;
+bottom: 15px;
+position: absolute;
+border-radius: 15px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: 'Product Sans Regular';
+color: white;
+font-size: 14px;
+}
+.settingsshortcut {
+background-color: #454A4D;
+width: 31px;
+height: 31px;
+right: 15;
+bottom: 15px;
+position: absolute;
+border-radius: 15px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: 'Product Sans Regular';
+color: white;
+font-size: 14px;
+}
+.settingsshortcut img {
+width: 20px;
+height: auto;
+}
+.batteryremaining {
+bottom: 10;
+right: 60;
+position: absolute;
+color: #E8EACD;
+font-family: "Product Sans Regular";
+font-size: 14px;
+}
+iframe {
+border: none;
+}
+</style>
+</head>
+<body>
+<div class="reg100">
+<div class="accessibilitybutton">
+<img src="../../usr/share/chromeos-assets/general/qs/acs.svg">
+<p>Accessibility</p>
+<img src="../../usr/share/chromeos-assets/image/rightchev.svg">
+</div>
+<div class="screenshotbutton">
+    <img src="../../usr/share/chromeos-assets/image/screenshot.svg">
+    <p>Screen</p>
+    <p>capture</p>
+    </div>
+<div class="dndbutton">
+    <img src="../../usr/share/chromeos-assets/image/dnd.svg">
+    <p>Do Not</p>
+    <p>Disturb</p>
+    </div>
+<div class="pwrselect" id="pwrselect">
+<img id="pwrIcon" src="../../usr/share/chromeos-assets/general/pwr/pwr.svg">
+<img id="expIcon" src="../../usr/share/chromeos-assets/general/pwr/exp.svg">
+</div>
+<div class="signoutbutton">
+<p>Sign out</p>
+</div>
+<div class="settingsshortcut">
+<img src="../../usr/share/chromeos-assets/general/sys/setting.svg">
+</div>
+<div class="batteryremaining">
+<p id="batterycalculation">100% - Calculating...</p>
+</div>
+<iframe id="pwrIframe" class="pwrframe" src="poweroptions.html" style="display: none;"></iframe>
+</div>
+</body>
+</html>

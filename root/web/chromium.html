@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+    background-color: #231C2F;
+    margin: 0;
+    width: 640px;
+    height: 480px;
+    overflow: hidden;
+    position: relative;
+    user-select: none;
+}
+
+
+.controls img {
+    width: 10px;
+    height: auto;
+    margin-left: 22px;
+}
+
+.controls {
+    top: 13px;
+    right: 13px;
+    position: absolute;
+    display: flex;
+}
+
+.mainbar {
+    background-color: #3F384C;
+    width: 100%;
+    height: 74px;
+    top: 40px;
+    position: absolute;
+    border-radius: 9px 9px 0px 0px;
+}
+
+.rightbarcontrols {
+    position: absolute;
+    right: 15px;
+    top: 12px;  /* Align to the top */
+    display: flex;
+    align-items: center;
+}
+
+#menu {
+    width: 20px;
+    height: auto;
+    margin-left: 10px; 
+}
+
+#linesplitter {
+    width: 20px;
+    height: auto;
+}
+
+#extension {
+    margin-right: 10px;
+    width: 20px;
+    height: auto;
+}
+#url {
+    border: none;
+    background-color: rgba(0,0,0,0);
+    font-family: 'Arial';
+    font-size: 12px;
+    color: white;
+    margin-left: 5px;
+    width: 85%;
+}
+.urlbar {
+    position: absolute;
+    right: 110px;
+    top: 10px; 
+    display: flex;
+    align-items: center;
+    background-color: #231C2F;
+    height: 26px;
+    width: 430px;
+    border-radius: 20px;
+}
+.pageinfoicon {
+    background-color: #3F384C;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-left: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.pageinfoicon img {
+    width: 16px;
+    height: auto;
+}
+.leftbarcontrols {
+    position: absolute;
+    left: 2px;
+    top: 14px;
+    display: flex;
+    align-items: center;
+}
+.leftbarcontrols img {
+    width: 17px;
+    height: auto;
+    margin-left: 12px;
+}
+.tabgroups {
+    position: absolute;
+    left: 2px;
+    top: 42px;
+    display: flex;
+    align-items: center;
+}
+.tabgroups img {
+    width: 22px;
+    height: auto;
+    margin-left: 12px;
+}
+.tabhistory {
+    top: 7px;
+    left: 5px;
+    position: absolute;
+    background-color: #3f384c;
+    border-radius: 9px;
+    width: 25px;
+    height: 25px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+.tabhistory img {
+    width: 19px;
+    height: auto;
+}
+.content {
+    width: 100%;
+    height: 76.1%;
+    bottom: 0;
+    left: 0;
+    position: absolute;
+}
+#innercontent {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+.starbutton {
+    width: 19px;
+    height: auto;
+    right: 10px;
+    position: absolute;
+}
+.tabs {
+    width: 240px;
+    height: auto;
+    left: 20px;
+    top: 11px;
+    position: absolute;
+}
+.tabs p {
+    position: absolute;
+    top: -6px;
+    left: 30px;
+    font-size: 12px;
+    color: white;
+    font-family: 'Arial';
+}
+</style>
+</head>
+<body>
+    <div class="tabs">
+        <p>The chromium projects</p>
+        <img src="../../usr/share/chromeos-assets/image/tab.svg">
+    </div>
+    <div class="tabhistory">
+        <img src="../../usr/share/chromeos-assets/general/pwr/exp.svg">
+    </div>
+<div class="topbar">
+    <div class="controls">
+        <img src="../../usr/share/chromeos-assets/general/sys/min.svg">
+        <img src="../../usr/share/chromeos-assets/general/sys/multi.svg">
+        <img src="../../usr/share/chromeos-assets/general/sys/exit.svg" id="exitButton">
+    </div>
+</div>
+<div class="mainbar">
+    <div class="rightbarcontrols">
+        <img id="extension" src="../../usr/share/chromeos-assets/general/sys/ext.svg">
+        <img id="linesplitter" src="../../usr/share/chromeos-assets/general/sys/line_splitter.svg">
+        <img id="menu" src="../../usr/share/chromeos-assets/general/sys/extra.svg">
+    </div>
+    <div class="leftbarcontrols">
+        <img id="backwardarrow" src="../../usr/share/chromeos-assets/chromium/backward_disallowed.svg">
+        <img id="forwardarrow" src="../../usr/share/chromeos-assets/chromium/forward_disallowed.svg">
+        <img id="refresh" src="../../usr/share/chromeos-assets/chromium/refresh.svg">
+    </div>
+    <div class="urlbar">
+        <div class="pageinfoicon">
+            <img src="../../usr/share/chromeos-assets/chromium/pageinfo.svg">        </div>
+        <input type="text" id="url" name="url" placeholder="Search or type a URL" onkeypress="loadURL(event)">
+        <img class="starbutton" src="../../usr/share/chromeos-assets/chromium/star.svg">
+    </div>
+    <div class="tabgroups">
+        <img src="../../usr/share/chromeos-assets/chromium/tabgroup.svg">
+    </div>
+</div>
+<div class="content">
+<iframe id="innercontent" src="https://chromium.org"></iframe>
+</div>
+
+<script>
+function loadURL(event) {
+    if (event.key === 'Enter') {
+        var url = document.getElementById('url').value;
+        if (url.startsWith('chrome://')) {
+            var internalUrl = 'internal/' + url.substring(9) + '.html';
+            document.getElementById('innercontent').src = internalUrl;
+        } else {
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            document.getElementById('innercontent').src = url;
+        }
+    }
+}
+
+function closeIframe() {
+    window.parent.postMessage('closeIframe', '*');
+}
+
+document.getElementById('exitButton').addEventListener('click', closeIframe);
+</script>
+</body>
+</html>
