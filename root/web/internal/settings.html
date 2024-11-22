@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+        @font-face {
+    font-family: 'Product Sans Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Product Sans Regular'), url('../../../usr/share/chromeos-assets/sys/fonts/reg.woff') format('woff');
+    }
+    @font-face {
+    font-family: 'Product Sans Medium';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Product Sans Medium'), url('../../../usr/share/chromeos-assets/sys/fonts/med.woff') format('woff');
+    }
+body {
+background-color: #202124;
+color: white;
+font-family: "Product Sans Regular";
+margin: 0;
+}
+h1 {
+margin: 10px;
+font-size: 24px;
+}
+.navbar {
+background-color: #3f3f3f;
+top: 0;
+left: 0;
+padding: 5px;
+}
+.main {
+margin-left: 15px;
+}
+input {
+background-color: #4F4F4F;
+border: none;
+color: white;
+padding: 6px;
+border-radius: 30px;
+}
+</style>
+</head>
+<body>
+<div class="navbar">
+<h1>Settings</h1>
+</div>
+<div class="main">
+<p>Set the background (non-persistent)</p>
+<input type="text" placeholder="Background URL" oninput="changeTopmostParentBackground(this.value)">
+</div>
+<script>
+function changeTopmostParentBackground(url) {
+    window.top.postMessage({
+        type: 'changeBackground',
+        url: url
+    }, '*');
+}
+</script>
+</body>
+</html>
