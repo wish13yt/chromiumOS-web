@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+@font-face {
+    font-family: 'Product Sans Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Product Sans Regular'), url('../../../usr/share/chromeos-assets/sys/fonts/reg.woff') format('woff');
+}
+@font-face {
+    font-family: 'Product Sans Medium';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Product Sans Medium'), url('../../../usr/share/chromeos-assets/sys/fonts/med.woff') format('woff');
+}
+body {
+    background-color: #202124;
+    color: white;
+    font-family: "Product Sans Regular";
+    margin: 0;
+}
+h1 {
+    margin: 10px;
+    font-size: 24px;
+}
+.navbar {
+    background-color: #3f3f3f;
+    top: 0;
+    left: 0;
+    padding: 5px;
+}
+.main {
+    margin-left: 15px;
+}
+input {
+    background-color: #4F4F4F;
+    border: none;
+    color: white;
+    padding: 6px;
+    border-radius: 30px;
+}
+</style>
+</head>
+<body>
+<div class="navbar">
+<h1>System Info</h1>
+</div>
+<div class="main">
+    <p id="cpu">CPU: checking...</p>
+    <p id="gpu">GPU: checking...</p>
+    <p id="laptopcheck">IsMobile: checking...</p>
+    <p id="display">Display: checking...</p>
+    <p id="cores">Cores: checking...</p>
+</div>
+
+<script>
+
+function isMobileDevice() {
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isSmallScreen = window.innerWidth < 800;
+    return isTouch && isSmallScreen;
+}
+
+function getDisplayInfo() {
+    const width = window.screen.width;
+    const height = window.screen.height;
+    return `${width} x ${height}`;
+}
+
+function estimateCPU(gpuInfo) {
+    if (gpuInfo.includes("AMD")) return "Likely AMD";
+    if (gpuInfo.includes("Intel")) return "Likely Intel";
+    return "Unknown CPU";
+}
+
+async function getSystemInfo() {
+    try {
+        const gpuInfo = await navigator.gpu?.adapter?.name || "Not available";
+        const displayInfo = getDisplayInfo();
+        const coreCount = navigator.hardwareConcurrency || "Unknown";
+
+        document.getElementById("gpu").textContent = `GPU: ${gpuInfo}`;
+        document.getElementById("display").textContent = `Display: ${displayInfo}`;
+        document.getElementById("cores").textContent = `Cores: ${coreCount}`;
+        document.getElementById("laptopcheck").textContent = `IsMobile: ${isMobileDevice()}`;
+        document.getElementById("cpu").textContent = `CPU: ${estimateCPU(gpuInfo)}`;
+    } catch (error) {
+        console.error("Error fetching system info:", error);
+    }
+}
+
+getSystemInfo();
+</script>
+</body>
+</html>
