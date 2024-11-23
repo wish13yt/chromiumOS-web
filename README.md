@@ -13,10 +13,6 @@ A chromiumOS based interface and look.
 - most websites dont work in chromium (literally unfixable)  
 if you do end up seeing a bug (not on here perferably), please make a github issue!
 
-# Compatibility
-This ___ONLY___ has been tested on Windows.
-You _can_ use this on Mac/ChromeOS, but it may be missing the favicon & background!
-
 # how to use/fork
 1. just download the source code, open index.html, push the funny button, and there you go.
 2. just fork it and make whatever changes you want. you may have to change some css settings
